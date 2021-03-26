@@ -1,0 +1,14 @@
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-column-gap: 25px;
+}
+
+.card-item {
+  padding: 20px;
+  border: 2px solid #F5F4FD;
+}
+
+.text-center {
+  text-align: center;
+}
