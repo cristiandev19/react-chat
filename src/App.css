@@ -12,3 +12,11 @@
 .text-center {
   text-align: center;
 }
+
+.other-message {
+  background-color: red;
+}
+
+.my-message {
+  background-color: blue;
+}
