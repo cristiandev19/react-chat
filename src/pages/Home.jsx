@@ -5,15 +5,24 @@ const Home = () => {
   const [chatForm, handleChatFormChange] = useForm({
     userName: '',
   });
+  const handleLogin = () => {
+    const userName = chatForm;
+    console.log({ userName });
+  };
+
   return (
     <div>
-      { chatForm.userName }
-      <input
-        type="text"
-        name="userName"
-        id="userName"
-        onChange={handleChatFormChange}
-      />
+      <h2>Bienvenido a tu chat</h2>
+      <label htmlFor="userName">
+        Ingresa tu nombre de usuario:
+        <input
+          type="text"
+          name="userName"
+          id="userName"
+          onChange={handleChatFormChange}
+        />
+      </label>
+      <button onClick={handleLogin} type="button">Ingresar</button>
     </div>
   );
 };
