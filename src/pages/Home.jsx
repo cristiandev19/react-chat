@@ -1,13 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import AuthContext from '../auth/AuthContext';
 import useForm from '../hooks/useForm';
+import types from '../types/auth.types';
 
 const Home = () => {
+  const { dispatch } = useContext(AuthContext);
+
   const [chatForm, handleChatFormChange] = useForm({
     userName: '',
   });
   const handleLogin = () => {
     const userName = chatForm;
     console.log({ userName });
+    dispatch(types.login, { userName });
   };
 
   return (
