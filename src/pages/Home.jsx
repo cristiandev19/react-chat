@@ -4,7 +4,7 @@ import useForm from '../hooks/useForm';
 import types from '../types/auth.types';
 
 const Home = () => {
-  const { dispatch } = useContext(AuthContext);
+  const { user, dispatch } = useContext(AuthContext);
 
   const [chatForm, handleChatFormChange] = useForm({
     userName: '',
@@ -12,12 +12,20 @@ const Home = () => {
   const handleLogin = () => {
     const userName = chatForm;
     console.log({ userName });
-    dispatch(types.login, { userName });
+    dispatch({
+      type    : types.login,
+      payload : { ...userName },
+    });
   };
+  console.log('user', user);
 
   return (
     <div>
-      <h2>Bienvenido a tu chat</h2>
+      {
+        user.logged
+          ? <h2>{ `Bienvenido ${user.userName}` }</h2>
+          : <h2>Bienvenido a tu chat</h2>
+      }
       <label htmlFor="userName">
         Ingresa tu nombre de usuario:
         <input
