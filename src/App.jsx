@@ -15,7 +15,7 @@ import authReducer from './auth/AuthReducer';
 const init = () => JSON.parse(localStorage.getItem('userChat')) || { logged: false };
 
 function App() {
-  const [user, dispatch] = useReducer.Provider(authReducer, {}, init);
+  const [user, dispatch] = useReducer(authReducer, {}, init);
 
   useEffect(() => {
     localStorage.setItem('userChat', JSON.stringify(user));
