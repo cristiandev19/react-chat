@@ -1,9 +1,14 @@
+import {
+  useHistory,
+} from 'react-router-dom';
 import React, { useContext } from 'react';
 import AuthContext from '../auth/AuthContext';
 import useForm from '../hooks/useForm';
 import types from '../types/auth.types';
 
 const Home = () => {
+  const history = useHistory();
+
   const { user, dispatch } = useContext(AuthContext);
 
   const [chatForm, handleChatFormChange] = useForm({
@@ -16,6 +21,7 @@ const Home = () => {
       type    : types.login,
       payload : { ...userName },
     });
+    history.push(`/chat/${123}`);
   };
   console.log('user', user);
 
