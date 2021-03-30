@@ -1,21 +1,27 @@
 import socketIOClient from 'socket.io-client';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import useForm from '../hooks/useForm';
+import AuthContext from '../auth/AuthContext';
+import { config } from '../config';
 
 const ChatScreen = () => {
   const [chatMessages, setChatMessages] = useState([]);
   const [socket, setSocket] = useState(null);
+  const { user } = useContext(AuthContext);
   const [socketConnected, setSocketConnected] = useState(false);
   const [chatForm, handleChatFormChange] = useForm({
-    message  : '',
-    userName : '',
+    message: '',
   });
-  const { message, userName } = chatForm;
+  const { message } = chatForm;
 
   useEffect(() => {
+    console.log('socket', socket);
+    console.log('process.env.BACK_DOMAIN', config.backend);
     if (!socket) {
-      setSocket(socketIOClient(process.env.BACK_DOMAIN));
+      setSocket(socketIOClient(config.backend));
     }
+    console.log('socket', socket);
+
     return () => (socket ? socket.disconnect() : null);
   }, []);
 
@@ -39,8 +45,8 @@ const ChatScreen = () => {
     e.preventDefault();
     const newMessage = {
       message,
-      userName,
-      time: Date.now(),
+      userName : user.userName,
+      time     : Date.now(),
     };
     socket.emit('newMessage', newMessage);
     setChatMessages((oldMessages) => [...oldMessages, newMessage]);
@@ -48,8 +54,35 @@ const ChatScreen = () => {
 
   return (
 
-    <div>
-      <form onSubmit={handleSendMessage}>
+    <div className="chat-container">
+      <div className="chat-messages">
+        {
+          chatMessages.map((chatMessage) => (
+            chatMessage.userName === user.userName
+              ? (
+                <div key={chatMessage.time} className="message my-message">
+                  <div className="message-content">
+                    {chatMessage.message}
+                  </div>
+                  <div className="message-user">
+                    {chatMessage.userName}
+                  </div>
+                </div>
+              )
+              : (
+                <div key={chatMessage.time} className="message other-message">
+                  <div className="message-content">
+                    {chatMessage.message}
+                  </div>
+                  <div className="message-user">
+                    {chatMessage.userName}
+                  </div>
+                </div>
+              )
+          ))
+        }
+      </div>
+      <form onSubmit={handleSendMessage} className="chat-input">
         <label htmlFor="message">
           Escribe el mensaje
           <input
@@ -60,43 +93,6 @@ const ChatScreen = () => {
           />
         </label>
       </form>
-      <label htmlFor="useName">
-        Username:
-        <input
-          type="text"
-          name="userName"
-          id="userName"
-          onChange={handleChatFormChange}
-        />
-      </label>
-
-      <div>
-        {
-          chatMessages.map((chatMessage) => (
-            chatMessage.userName === userName
-              ? (
-                <div key={chatMessage.time} className="my-message">
-                  <span>
-                    {chatMessage.message}
-                  </span>
-                  <span>
-                    {chatMessage.userName}
-                  </span>
-                </div>
-              )
-              : (
-                <div key={chatMessage.time} className="other-message">
-                  <span>
-                    {chatMessage.message}
-                  </span>
-                  <span>
-                    {chatMessage.userName}
-                  </span>
-                </div>
-              )
-          ))
-        }
-      </div>
     </div>
   );
 };
