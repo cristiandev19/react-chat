@@ -16,16 +16,23 @@
 .chat-container {
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  position: relative;
 }
 
 .chat-messages {
-  height: 80vh;
+  height: 85%;
   overflow: auto;
   background-color: #f6f8fc;
   padding: 3%;
 }
-.chat-input {
-  height: 10vh;
+.chat-form {
+  display: flex;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: white;
+  height: 80px;
 }
 
 .message {
@@ -33,6 +40,14 @@
   flex-direction: column;
   width: 50%;
 }
+.message-input {
+  width: 100%;
+  display: flex;
+}
+.message-input > input {
+  width: 100%;
+}
+
 .message-user {
   margin: 0 20px 15px 20px;
   color: #808080;
