@@ -1,5 +1,7 @@
 import socketIOClient from 'socket.io-client';
-import { useContext, useEffect, useState } from 'react';
+import {
+  useContext, useEffect, useRef, useState,
+} from 'react';
 import useForm from '../hooks/useForm';
 import AuthContext from '../auth/AuthContext';
 import { config } from '../config';
@@ -9,10 +11,20 @@ const ChatScreen = () => {
   const [socket, setSocket] = useState(null);
   const { user } = useContext(AuthContext);
   const [socketConnected, setSocketConnected] = useState(false);
-  const [chatForm, handleChatFormChange] = useForm({
+  const [chatForm, handleChatFormChange, setValue] = useForm({
     message: '',
   });
   const { message } = chatForm;
+
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatMessages]);
 
   useEffect(() => {
     console.log('socket', socket);
@@ -42,6 +54,7 @@ const ChatScreen = () => {
   }, [socket]);
 
   const handleSendMessage = (e) => {
+    console.log('e', e);
     e.preventDefault();
     const newMessage = {
       message,
@@ -50,6 +63,10 @@ const ChatScreen = () => {
     };
     socket.emit('newMessage', newMessage);
     setChatMessages((oldMessages) => [...oldMessages, newMessage]);
+    setValue({
+      ...chatForm,
+      message: '',
+    });
   };
 
   return (
@@ -81,17 +98,20 @@ const ChatScreen = () => {
               )
           ))
         }
+        <div ref={messagesEndRef} />
       </div>
-      <form onSubmit={handleSendMessage} className="chat-input">
-        <label htmlFor="message">
+      <form onSubmit={handleSendMessage} className="chat-form">
+        <label htmlFor="message" className="message-input">
           Escribe el mensaje
           <input
             type="text"
             name="message"
             id="message"
             onChange={handleChatFormChange}
+            value={message}
           />
         </label>
+        <button type="submit">Enviar</button>
       </form>
     </div>
   );
